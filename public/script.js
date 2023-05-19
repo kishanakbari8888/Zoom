@@ -4,8 +4,8 @@ const peer = new Peer(undefined,{
     host:'/',
     port:'3000'
 });
-
 let myVideoStream;
+
 
 const videogrid = document.getElementById('video-grid');
 const videoElement = document.createElement('video');
@@ -16,21 +16,22 @@ peer.on('open',(id)=>{
 });
 
 
-
-
 videoElement.autoplay = true;
 videogrid.appendChild(videoElement);
 
 
 const addVideoStream = (video,stream) =>{
-    video.srcObject = stream;
     video.autoplay = true;
+    video.srcObject = stream;
     videogrid.appendChild(video);
 };
 
-navigator.mediaDevices.getUserMedia({ video: true,audio:true }).then((stream) => {
+
+// var constraints = { audio: true, video: true, options: { mirror: true} };
+navigator.mediaDevices.getUserMedia({ video: true,audio:true}).then((stream) => {
     videoElement.srcObject = stream;
     myVideoStream = stream;
+
     
     peer.on('call',(call)=>{
         call.answer(stream);
@@ -47,6 +48,7 @@ navigator.mediaDevices.getUserMedia({ video: true,audio:true }).then((stream) =>
         call.on('stream',(userVideoStream)=>{
             addVideoStream(uservideo,userVideoStream);
         });
+        
     });
     
 }).catch((error) => {
@@ -102,7 +104,6 @@ const setUnmuteButton = () =>{
     document.querySelector('.main__mute_button').innerHTML = html;
 }
 
-
 const playStop = () =>{
     const enabled = myVideoStream.getVideoTracks()[0].enabled;
     if(enabled){
@@ -129,4 +130,3 @@ const setPlayVideo = () =>{
     `;
     document.querySelector('.main__video_button').innerHTML = html;
 }
- 

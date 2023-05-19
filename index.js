@@ -33,6 +33,7 @@ io.on('connection',(socket) =>{
 
         socket.join(roomid);
         socket.to(roomid).emit('user-connected',useid);
+        
         socket.on('message',(message)=>{
             io.to(roomid).emit('createMessage',message);
         });
