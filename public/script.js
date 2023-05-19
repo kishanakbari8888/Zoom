@@ -19,16 +19,31 @@ peer.on('open',(id)=>{
 
 videoElement.autoplay = true;
 videogrid.appendChild(videoElement);
-let st;
+
+
+const addVideoStream = (video,stream) =>{
+    video.srcObject = stream;
+    video.autoplay = true;
+    videogrid.appendChild(video);
+};
 
 navigator.mediaDevices.getUserMedia({ video: true}).then((stream) => {
     videoElement.srcObject = stream;
 
+    peer.on('call',(call)=>{
+        call.answer(stream);
+        const myvideo = document.createElement('video');
+        call.on('stream',(userVideoStream)=>{
+            addVideoStream(myvideo,userVideoStream);
+        });
+    });
+ 
     socket.on('user-connected',(useid)=>{
         console.log("User Connected");
         const call = peer.call(useid,stream);
+        const uservideo = document.createElement('video');
         call.on('stream',(userVideoStream)=>{
-            addVideoStream(videoElement,userVideoStream);
+            addVideoStream(uservideo,userVideoStream);
         });
     });
     
